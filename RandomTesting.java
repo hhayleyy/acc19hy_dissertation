@@ -3,14 +3,15 @@ import java.util.*;
 public class RandomTesting {
     private int[] inputDomain;
     private int numTestSets;
+    private int lengthOfInput;
 
     public RandomTesting(int[] inputDomain, int numTestSets){
         this.inputDomain = inputDomain;
         this.numTestSets = numTestSets;
+        this.lengthOfInput = inputDomain.length;
     }
 
     public List<Integer> createTestSet() throws Exception{
-        int lengthOfInput = this.inputDomain.length;
         List<Integer> testSet = new ArrayList<>();
 
         if (numTestSets > lengthOfInput){
@@ -23,7 +24,7 @@ public class RandomTesting {
 
             while(testSetContains){
                 Random random = new Random();
-                int positionInDomain = random.nextInt(lengthOfInput);
+                int positionInDomain = random.nextInt(this.lengthOfInput);
                 testValue = this.inputDomain[positionInDomain];
                 testSetContains = testSet.contains(testValue);
             }
@@ -33,6 +34,10 @@ public class RandomTesting {
 
         return testSet;
 
+    }
+
+    public int getLengthOfInput(){
+        return this.lengthOfInput;
     }
 }
 
