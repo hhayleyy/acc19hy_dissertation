@@ -2,23 +2,23 @@ import java.util.*;
 
 public class RandomTesting {
     private int[] inputDomain;
-    private int numTestSets;
+    private int numTestCases;
     private int lengthOfInput;
 
-    public RandomTesting(int[] inputDomain, int numTestSets){
+    public RandomTesting(int[] inputDomain, int numTestCases){
         this.inputDomain = inputDomain;
-        this.numTestSets = numTestSets;
+        this.numTestCases = numTestCases;
         this.lengthOfInput = inputDomain.length;
     }
 
     public List<Integer> createTestSet() throws Exception{
         List<Integer> testSet = new ArrayList<>();
 
-        if (numTestSets > lengthOfInput){
+        if (numTestCases > lengthOfInput){
             throw new Exception("Amount of test sets required is bigger than input domain");
         }
 
-        for (int position = 0; position < numTestSets ; position ++){
+        for (int position = 0; position < numTestCases ; position ++){
             boolean testSetContains = true;
             int testValue = 0;
 

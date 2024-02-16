@@ -5,12 +5,12 @@ import java.util.Random;
 public class SelectTestFromCandidate extends RandomTesting{
 
     private int[] inputDomain;
-    private int numTestSets;
+    private int numTestCases;
 
-    public SelectTestFromCandidate(int[] inputDomain, int numTestSets) {
-        super(inputDomain, numTestSets);
+    public SelectTestFromCandidate(int[] inputDomain, int numTestCases) {
+        super(inputDomain, numTestCases);
         this.inputDomain = inputDomain;
-        this.numTestSets = numTestSets;
+        this.numTestCases = numTestCases;
     }
 
     public List<Integer> performSTFCS() throws Exception{
@@ -18,7 +18,7 @@ public class SelectTestFromCandidate extends RandomTesting{
         List<Integer> executedSet = new ArrayList<>();
         executedSet.add(testCase);
 
-        while (executedSet.size() < numTestSets){
+        while (executedSet.size() < numTestCases){
             List<Integer> candidateSet = super.createTestSet();
             float highestDistance = 0;
             int nextTestCase = 0;
