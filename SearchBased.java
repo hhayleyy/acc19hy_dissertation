@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -10,9 +9,9 @@ public class SearchBased extends RandomTesting {
     private int numParents;
     private double mutationProbability;
     private int numTestCases;
-    private int[] inputDomain;
+    private List<Float> inputDomain;
 
-    public SearchBased(int[] inputDomain, int numTestCases, int populationSize, int numGenerations, int numParents, double mutationProbability) {
+    public SearchBased(List<Float> inputDomain, int numTestCases, int populationSize, int numGenerations, int numParents, double mutationProbability) {
         super(inputDomain, numTestCases);
         this.populationSize = populationSize;
         this.numGenerations = numGenerations;
@@ -22,13 +21,13 @@ public class SearchBased extends RandomTesting {
         this.inputDomain = inputDomain;
     }
 
-    public List<Integer> performSBS() throws Exception{
-        List<List<Integer>> population = generateRandomPopulation();
+    public List<Float> performSBS() throws Exception{
+        List<List<Float>> population = generateRandomPopulation();
         int generation = 1;
         while (generation <= numGenerations){
             float totalDiversity = 0;
-            List<List<Integer>> parents = new ArrayList<>();
-            for (List<Integer> testSet: population){
+            List<List<Float>> parents = new ArrayList<>();
+            for (List<Float> testSet: population){
                 float diversity = calculateDiversity(testSet);
                 totalDiversity += diversity;
             }
@@ -41,7 +40,7 @@ public class SearchBased extends RandomTesting {
                 while(foundDiversity == false){
                     double randomProbability = random.nextDouble();
                     float relativeDiversity = 0;
-                    List<Integer> testSet = population.get(counter);
+                    List<Float> testSet = population.get(counter);
                     relativeDiversity = calculateDiversity(testSet)/totalDiversity;
                     currentProbability += relativeDiversity;
                     if (randomProbability <= currentProbability && !parents.contains(testSet)){
@@ -64,8 +63,8 @@ public class SearchBased extends RandomTesting {
         }
         
         float highestDiversity = 0;
-        List<Integer> bestTestSet = new ArrayList<>();
-        for(List<Integer> testSet : population){
+        List<Float> bestTestSet = new ArrayList<>();
+        for(List<Float> testSet : population){
             float diversity = calculateDiversity(testSet);
             if (diversity > highestDiversity){
                 bestTestSet = testSet;
@@ -76,11 +75,11 @@ public class SearchBased extends RandomTesting {
 
     }
 
-    public List<List<Integer>> generateRandomPopulation() throws Exception{
-        List<List<Integer>> randomTestSets = new ArrayList<>();
+    public List<List<Float>> generateRandomPopulation() throws Exception{
+        List<List<Float>> randomTestSets = new ArrayList<>();
 
         for (int testSetCount = 0; testSetCount < this.populationSize; testSetCount++){
-            List<Integer> randomTestSet = super.createTestSet();
+            List<Float> randomTestSet = super.createTestSet();
             randomTestSets.add(randomTestSet);
         }
         
@@ -88,13 +87,13 @@ public class SearchBased extends RandomTesting {
         
     }
 
-    public float calculateDiversity(List<Integer> population){
+    public float calculateDiversity(List<Float> population){
         // sum of the distance between the test datum and its nearest neighbour
         float diversity = 0;
 
-        for (int testCase : population){
+        for (float testCase : population){
             float smallestNeighbourDifference = 0;
-            for (int neighbour: population){
+            for (float neighbour: population){
                 float neighbourDifference = DistanceMetric.euclideanDistance(testCase, neighbour);
 
                 if((smallestNeighbourDifference == 0) ||(testCase != neighbour) && (neighbourDifference < smallestNeighbourDifference)){
@@ -109,23 +108,23 @@ public class SearchBased extends RandomTesting {
         return diversity;
     }
 
-    public List<List<Integer>> performOnePointCrossover(List<List<Integer>> parents){
+    public List<List<Float>> performOnePointCrossover(List<List<Float>> parents){
 
         for ( int parentCount = 1; parentCount <= numParents ; parentCount +=2 ){
-            List<Integer> firstParent = parents.get(parentCount-1);
-            List<Integer> secondParent = parents.get(parentCount);
+            List<Float> firstParent = parents.get(parentCount-1);
+            List<Float> secondParent = parents.get(parentCount);
             int midpoint = firstParent.size()/2;
 
-            List<Integer> firstHalfFirstParent = firstParent.subList(0, midpoint);
-            List<Integer> secondHalfSecondParent = secondParent.subList(midpoint, secondParent.size());
+            List<Float> firstHalfFirstParent = firstParent.subList(0, midpoint);
+            List<Float> secondHalfSecondParent = secondParent.subList(midpoint, secondParent.size());
 
-            List<Integer> combinedOffspringOne = new ArrayList<>(firstHalfFirstParent);
+            List<Float> combinedOffspringOne = new ArrayList<>(firstHalfFirstParent);
             combinedOffspringOne.addAll(secondHalfSecondParent);
 
-            List<Integer> firstHalfSecondParent = secondParent.subList(0, midpoint);
-            List<Integer> secondHalfFirstParent = firstParent.subList(midpoint, firstParent.size());
+            List<Float> firstHalfSecondParent = secondParent.subList(0, midpoint);
+            List<Float> secondHalfFirstParent = firstParent.subList(midpoint, firstParent.size());
 
-            List<Integer> combinedOffspringTwo = new ArrayList<>(firstHalfSecondParent);
+            List<Float> combinedOffspringTwo = new ArrayList<>(firstHalfSecondParent);
             combinedOffspringTwo.addAll(secondHalfFirstParent);
             
             parents.add(combinedOffspringOne);
@@ -136,28 +135,25 @@ public class SearchBased extends RandomTesting {
         return parents;
     }
 
-    public List<List<Integer>> performMutation(List<List<Integer>> population){
+    public List<List<Float>> performMutation(List<List<Float>> population){
 
-        for (List<Integer> testSet: population){
+        for (List<Float> testSet: population){
             Random random = new Random();
             double mutationChance = random.nextDouble();
-            int maximumValue = Arrays.stream(inputDomain).max().getAsInt();
 
             if (mutationChance < mutationProbability){
                 int mutationPosition = random.nextInt(0, (numTestCases-1));
-                int mutationValue = random.nextInt(1, maximumValue);
-                while(testSet.contains(mutationValue)){
-                    mutationValue = random.nextInt(1, maximumValue);
-                }
-                testSet.set(mutationPosition, mutationValue);
+                int randomInputDomainPosition = random.nextInt(inputDomain.size());
+                float mutation = inputDomain.get(randomInputDomainPosition);
+                testSet.set(mutationPosition, mutation);
             }
         }
 
 
         return population;
     }
-    public List<List<Integer>> reproduction(List<List<Integer>> parents){
-        List<List<Integer>> population = new ArrayList<>(parents);
+    public List<List<Float>> reproduction(List<List<Float>> parents){
+        List<List<Float>> population = new ArrayList<>(parents);
 
         while(population.size() < populationSize ){
             int position = population.size() % parents.size();
