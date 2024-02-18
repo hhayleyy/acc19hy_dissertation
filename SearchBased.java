@@ -145,6 +145,10 @@ public class SearchBased extends RandomTesting {
                 int mutationPosition = random.nextInt(0, (numTestCases-1));
                 int randomInputDomainPosition = random.nextInt(inputDomain.size());
                 float mutation = inputDomain.get(randomInputDomainPosition);
+                while(testSet.contains(mutation)){
+                    randomInputDomainPosition = random.nextInt(inputDomain.size());
+                    mutation = inputDomain.get(randomInputDomainPosition);
+                }
                 testSet.set(mutationPosition, mutation);
             }
         }
