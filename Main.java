@@ -7,26 +7,27 @@ import java.io.IOException;
 
 public class Main { 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        List<List<Float>> inputDomain = parseInputFile("input_domains/2d.txt");
+        List<TestCase> inputDomain = parseInputFile("input_domains/2d.txt");
 
 
-        RandomTesting testing = new RandomTesting(inputDomain, 10);
-        SelectTestFromCandidate testing2 = new SelectTestFromCandidate(inputDomain, 10);
-        SearchBased testing3 = new SearchBased(inputDomain, 10, 10, 20,3,0.2);
+        RandomTesting randomTesting = new RandomTesting(inputDomain, 10);
+        SelectTestFromCandidate stfcsTesting = new SelectTestFromCandidate(inputDomain, 10);
+        SearchBased sbsTesting = new SearchBased(inputDomain, 10, 10, 20,3,0.2);
 
         try {
-            System.out.println(testing.createTestSet());
-            System.out.println(testing2.performSTFCS());
-            System.out.println(testing3.performSBS());
+            List<TestCase> randomTestCases = randomTesting.createTestSet();
+            List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
+            List<TestCase> sbsTestCases = sbsTesting.performSBS();
+
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public static List<List<Float>> parseInputFile(String fileName) throws FileNotFoundException, IOException{
-        List<List<Float>> inputDomain = new ArrayList<>();
-        List<Float> inputCase = new ArrayList<>();
+    public static List<TestCase> parseInputFile(String fileName) throws FileNotFoundException, IOException{
+        List<TestCase> inputDomain = new ArrayList<>();
 
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line = reader.readLine();
@@ -34,11 +35,11 @@ public class Main {
                 String[] inputCases = line.split(" ");
                 for (String input: inputCases){
                     String[] inputDimensionValues = input.split(",");
-                    inputCase = new ArrayList<>();
+                    TestCase inputCase = new TestCase();
 
                     for (String dimensionValue: inputDimensionValues){
                         float inputCaseDimension = Float.parseFloat(dimensionValue);
-                        inputCase.add(inputCaseDimension);
+                        inputCase.addInputCaseValue(inputCaseDimension);
                     }
                     inputDomain.add(inputCase);
                     

@@ -1,14 +1,12 @@
-import java.util.List;
-
 public class DistanceMetric {
     
-    public static double euclideanDistance(List<Float> valueOne, List<Float> valueTwo){
+    public static double euclideanDistance(TestCase valueOne, TestCase valueTwo){
         double totalSum = 0;
-        int numOfDimensions = valueOne.size();
+        int numOfDimensions = valueOne.getNumberOfDimensions();
 
         for (int dimensionCount = 0 ; dimensionCount < numOfDimensions ; dimensionCount ++){
-            float currentValueOne = valueOne.get(dimensionCount);
-            float currentValueTwo = valueTwo.get(dimensionCount);
+            float currentValueOne = valueOne.getInputCaseValue(dimensionCount);
+            float currentValueTwo = valueTwo.getInputCaseValue(dimensionCount);
             totalSum += (currentValueOne - currentValueTwo) * (currentValueOne - currentValueTwo);
         }
 

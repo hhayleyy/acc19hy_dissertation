@@ -4,26 +4,26 @@ import java.util.Random;
 
 public class SelectTestFromCandidate extends RandomTesting{
 
-    private List<List<Float>> inputDomain;
+    private List<TestCase> inputDomain;
     private int numTestCases;
 
-    public SelectTestFromCandidate(List<List<Float>> inputDomain, int numTestCases) {
+    public SelectTestFromCandidate(List<TestCase> inputDomain, int numTestCases) {
         super(inputDomain, numTestCases);
         this.inputDomain = inputDomain;
         this.numTestCases = numTestCases;
     }
 
-    public List<List<Float>> performSTFCS() throws Exception{
-        List<Float>  testCase = generateRandomTestCase();
-        List<List<Float>> executedSet = new ArrayList<>();
+    public List<TestCase> performSTFCS() throws Exception{
+        TestCase  testCase = generateRandomTestCase();
+        List<TestCase> executedSet = new ArrayList<>();
         executedSet.add(testCase);
 
         while (executedSet.size() < numTestCases){
-            List<List<Float>> candidateSet = super.createTestSet();
+            List<TestCase> candidateSet = super.createTestSet();
             float highestDistance = 0;
-            List<Float> nextTestCase = new ArrayList<>();
+            TestCase nextTestCase = new TestCase();
 
-            for (List<Float> candidate: candidateSet){
+            for (TestCase candidate: candidateSet){
                 double euclideanDistance = DistanceMetric.euclideanDistance(testCase, candidate);
                 if (euclideanDistance > highestDistance){
                     nextTestCase = candidate;
@@ -38,12 +38,12 @@ public class SelectTestFromCandidate extends RandomTesting{
 
     }
 
-    public List<Float> generateRandomTestCase(){
+    public TestCase generateRandomTestCase(){
         int lengthOfInput = super.getLengthOfInput();
         Random random = new Random();
         int position = random.nextInt(lengthOfInput);
 
-        List<Float> randomTestCase = inputDomain.get(position);
+        TestCase randomTestCase = inputDomain.get(position);
 
         return randomTestCase;
         

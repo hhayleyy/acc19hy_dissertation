@@ -1,18 +1,18 @@
 import java.util.*;
 
 public class RandomTesting {
-    private List<List<Float>> inputDomain;
+    private List<TestCase> inputDomain;
     private int numTestCases;
     private int lengthOfInput;
 
-    public RandomTesting(List<List<Float>> inputDomain, int numTestCases){
+    public RandomTesting(List<TestCase> inputDomain, int numTestCases){
         this.inputDomain = inputDomain;
         this.numTestCases = numTestCases;
         this.lengthOfInput = inputDomain.size();
     }
 
-    public List<List<Float>> createTestSet() throws Exception{
-        List<List<Float>> testSet = new ArrayList<>();
+    public List<TestCase> createTestSet() throws Exception{
+        List<TestCase> testSet = new ArrayList<>();
 
         if (numTestCases > lengthOfInput){
             throw new Exception("Amount of test sets required is bigger than input domain");
@@ -20,7 +20,7 @@ public class RandomTesting {
 
         for (int position = 0; position < numTestCases ; position ++){
             boolean testSetContains = true;
-            List<Float> testValue = new ArrayList<>();
+            TestCase testValue = new TestCase();
 
             while(testSetContains){
                 Random random = new Random();
