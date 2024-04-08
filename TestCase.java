@@ -2,13 +2,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestCase {
-    private List<Float> inputCaseValues = new ArrayList<>();
+    private List<Double> inputCaseValues = new ArrayList<>();
 
-    public float getInputCaseValue(int dimension){
+    public TestCase(){
+        
+    }
+
+    public TestCase(List<Double> inputCaseValues){
+        this.inputCaseValues = inputCaseValues;
+    }
+
+    public double getInputCaseValue(int dimension){
         return inputCaseValues.get(dimension);
     }
 
-    public List<Float> getInputCase(){
+    public List<Double> getInputCase(){
         return inputCaseValues;
     }
 
@@ -16,8 +24,13 @@ public class TestCase {
         return inputCaseValues.size();
     }
 
-    public void addInputCaseValue(float value){
+    public void addInputCaseValue(double value){
         inputCaseValues.add(value);
+    }
+
+    @Override
+    public String toString() {
+        return inputCaseValues.toString();
     }
 
 }

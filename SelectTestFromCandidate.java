@@ -20,7 +20,7 @@ public class SelectTestFromCandidate extends RandomTesting{
 
         while (executedSet.size() < numTestCases){
             List<TestCase> candidateSet = super.createTestSet();
-            float highestDistance = 0;
+            double highestDistance = 0;
             TestCase nextTestCase = new TestCase();
 
             for (TestCase candidate: candidateSet){

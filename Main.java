@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Main { 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        List<TestCase> inputDomain = parseInputFile("input_domains/2d.txt");
+        List<TestCase> inputDomain = parseInputFile("input_domains/3d-100.csv");
 
 
         RandomTesting randomTesting = new RandomTesting(inputDomain, 10);
@@ -18,6 +18,15 @@ public class Main {
             List<TestCase> randomTestCases = randomTesting.createTestSet();
             List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
             List<TestCase> sbsTestCases = sbsTesting.performSBS();
+
+            SimulatedSystem system = new SimulatedSystem(5, "box", inputDomain, 2);
+
+            System.out.println(sbsTestCases);
+            System.out.println(system.failureCasesFound(sbsTestCases));
+            System.out.println(stfcsTestCases);
+            System.out.println(system.failureCasesFound(stfcsTestCases));
+            System.out.println(randomTestCases);
+            System.out.println(system.failureCasesFound(randomTestCases));
 
             
         } catch (Exception e) {
@@ -38,7 +47,7 @@ public class Main {
                     TestCase inputCase = new TestCase();
 
                     for (String dimensionValue: inputDimensionValues){
-                        float inputCaseDimension = Float.parseFloat(dimensionValue);
+                        double inputCaseDimension = Double.parseDouble(dimensionValue);
                         inputCase.addInputCaseValue(inputCaseDimension);
                     }
                     inputDomain.add(inputCase);

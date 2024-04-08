@@ -25,10 +25,10 @@ public class SearchBased extends RandomTesting {
         List<List<TestCase>> population = generateRandomPopulation();
         int generation = 1;
         while (generation <= numGenerations){
-            float totalDiversity = 0;
+            double totalDiversity = 0;
             List<List<TestCase>> parents = new ArrayList<>();
             for (List<TestCase> testSet: population){
-                float diversity = calculateDiversity(testSet);
+                double diversity = calculateDiversity(testSet);
                 totalDiversity += diversity;
             }
 
@@ -36,10 +36,10 @@ public class SearchBased extends RandomTesting {
                 Random random = new Random();
                 boolean foundDiversity = false;
                 int counter = 0;
-                float currentProbability = 0;
+                double currentProbability = 0;
                 while(foundDiversity == false){
                     double randomProbability = random.nextDouble();
-                    float relativeDiversity = 0;
+                    double relativeDiversity = 0;
                     List<TestCase> testSet = population.get(counter);
                     relativeDiversity = calculateDiversity(testSet)/totalDiversity;
                     currentProbability += relativeDiversity;
@@ -62,10 +62,10 @@ public class SearchBased extends RandomTesting {
             generation += 1;
         }
         
-        float highestDiversity = 0;
+        double highestDiversity = 0;
         List<TestCase> bestTestSet = new ArrayList<>();
         for(List<TestCase> testSet : population){
-            float diversity = calculateDiversity(testSet);
+            double diversity = calculateDiversity(testSet);
             if (diversity > highestDiversity){
                 bestTestSet = testSet;
             }
@@ -87,9 +87,9 @@ public class SearchBased extends RandomTesting {
         
     }
 
-    public float calculateDiversity(List<TestCase> testSet){
+    public double calculateDiversity(List<TestCase> testSet){
         // sum of the distance between the test datum and its nearest neighbour
-        float diversity = 0;
+        double diversity = 0;
 
         for (TestCase testCase : testSet){
             double smallestNeighbourDifference = 0;

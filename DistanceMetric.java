@@ -5,8 +5,8 @@ public class DistanceMetric {
         int numOfDimensions = valueOne.getNumberOfDimensions();
 
         for (int dimensionCount = 0 ; dimensionCount < numOfDimensions ; dimensionCount ++){
-            float currentValueOne = valueOne.getInputCaseValue(dimensionCount);
-            float currentValueTwo = valueTwo.getInputCaseValue(dimensionCount);
+            double currentValueOne = valueOne.getInputCaseValue(dimensionCount);
+            double currentValueTwo = valueTwo.getInputCaseValue(dimensionCount);
             totalSum += (currentValueOne - currentValueTwo) * (currentValueOne - currentValueTwo);
         }
 
