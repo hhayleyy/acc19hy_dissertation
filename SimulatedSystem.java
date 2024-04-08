@@ -1,33 +1,28 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Stream;
-import java.util.Arrays;
 
 public class SimulatedSystem {
     private int totalFailureRegions;
     private List<TestCase> inputDomain;
     private int lengthOfInput;
     private List<TestCase> failureRegions;
-    private int amountOfBoxes;
     private String failureRegionType;
 
 
-    public SimulatedSystem(int totalFailureRegions, String failureRegionType, List<TestCase> inputDomain, int amountOfBoxes){
+    public SimulatedSystem(int totalFailureRegions, String failureRegionType, List<TestCase> inputDomain){
         this.totalFailureRegions = totalFailureRegions;
         this.inputDomain = inputDomain;
         this.lengthOfInput = inputDomain.size();
-        this.amountOfBoxes = amountOfBoxes;
         this.failureRegionType = failureRegionType;
         this.failureRegions = createFailureRegions();
     }
 
     private List<TestCase> createFailureRegions(){
         List<TestCase> failureRegions = new ArrayList<>();
-        if (failureRegionType == "point" ){
+        if (failureRegionType.equals("point")){
             failureRegions = createPointFailureRegions();
-        }else if (failureRegionType == "box"){
+        }else if (failureRegionType.equals("box")){
             failureRegions = createBoxFailureRegions();
         }else {
             System.err.println("Incorrect failure region type. Please input either of the following: point, box, strip");
@@ -55,9 +50,9 @@ public class SimulatedSystem {
 
     private List<TestCase> createBoxFailureRegions(){
         List<TestCase> failureRegions = new ArrayList<>();
-        double boxSize = Math.pow((totalFailureRegions/amountOfBoxes), (1/inputDomain.get(0).getNumberOfDimensions()));
+        double boxSize = Math.pow(totalFailureRegions, (1/inputDomain.get(0).getNumberOfDimensions()));
 
-        for (int boxCount = 0 ; boxCount < amountOfBoxes; boxCount++){
+        for (int boxCount = 0 ; boxCount < totalFailureRegions; boxCount++){
             Random random = new Random();
             int position = random.nextInt(lengthOfInput);
             TestCase randomFailure = inputDomain.get(position);
@@ -88,36 +83,7 @@ public class SimulatedSystem {
             }
            
         }
-        System.out.println(failureRegions);
         return failureRegions;
-    }
-
-    private static List<TestCase> createFailureBox(List<List<Double>> boxDimensions) {
-        List<List<Double>> boxPoints = new ArrayList<>();
-        generateCombinations(boxDimensions, new ArrayList<>(), 0, boxPoints);
-
-        List<TestCase> failureRegion = new ArrayList<>();
-        
-        for (List<Double> boxPoint: boxPoints){
-            TestCase failureCase = new TestCase(boxPoint);
-
-            failureRegion.add(failureCase);
-
-        }
-        return failureRegion;
-    }
-
-    private static void generateCombinations(List<List<Double>> boxDimensions, List<Double> current, int index, List<List<Double>> result) {
-        if (index == boxDimensions.size()) {
-            result.add(new ArrayList<>(current));
-            return;
-        }
-
-        for (Double value : boxDimensions.get(index)) {
-            current.add(value);
-            generateCombinations(boxDimensions, current, index + 1, result);
-            current.remove(current.size() - 1);
-        }
     }
 
     private boolean isInRange(TestCase testCase, double boxSize){
@@ -159,13 +125,13 @@ public class SimulatedSystem {
     public int failureCasesFound(List<TestCase> testCases){
         List<TestCase> failurePointsFound = new ArrayList<>();
 
-        if (failureRegionType == "point" ){
+        if (failureRegionType.equals("point")){
             for (TestCase testCase : testCases){
                 if (failureRegions.contains(testCase)){
                     failurePointsFound.add(testCase);
                 }
             }
-        }else if (failureRegionType == "box"){
+        }else if (failureRegionType.equals("box")){
             int numDimensions = testCases.get(0).getNumberOfDimensions();
 
             for (int boxCount = 0 ; boxCount < failureRegions.size() ; boxCount = boxCount + numDimensions ) {
@@ -188,7 +154,6 @@ public class SimulatedSystem {
                 }
             }
         }
-        System.out.println(failurePointsFound);
         return failurePointsFound.size();
     }
 }

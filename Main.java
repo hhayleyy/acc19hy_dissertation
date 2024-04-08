@@ -7,35 +7,55 @@ import java.io.IOException;
 
 public class Main { 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        List<TestCase> inputDomain = parseInputFile("input_domains/3d-100.csv");
+        if(args.length != 8){
+            System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int>");
+        }else{
+            try{
+                String fileName = args[0];
+                int testSetSize = Integer.parseInt(args[1]);
+                int sbsPopulationSize = Integer.parseInt(args[2]);
+                int sbsGenerationAmount = Integer.parseInt(args[3]);
+                int sbsParentsAmount = Integer.parseInt(args[4]);
+                double sbsMutationProbability = Double.parseDouble(args[5]);
+                String failureRegionType = args[6];
+                int totalFailureRegions = Integer.parseInt(args[7]); 
+
+                List<TestCase> inputDomain = parseInputFile("input_domains/"+fileName);
 
 
-        RandomTesting randomTesting = new RandomTesting(inputDomain, 10);
-        SelectTestFromCandidate stfcsTesting = new SelectTestFromCandidate(inputDomain, 10);
-        SearchBased sbsTesting = new SearchBased(inputDomain, 10, 10, 20,3,0.2);
+                RandomTesting randomTesting = new RandomTesting(inputDomain, testSetSize);
+                SelectTestFromCandidate stfcsTesting = new SelectTestFromCandidate(inputDomain, testSetSize);
+                SearchBased sbsTesting = new SearchBased(inputDomain, testSetSize, sbsPopulationSize, sbsGenerationAmount,sbsParentsAmount,sbsMutationProbability);
+        
+                try {
+                    List<TestCase> randomTestCases = randomTesting.createTestSet();
+                    List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
+                    List<TestCase> sbsTestCases = sbsTesting.performSBS();
+        
+                    SimulatedSystem system = new SimulatedSystem(totalFailureRegions, failureRegionType, inputDomain);
+        
+                    System.out.println("Random Test Results");
+                    System.out.println(system.failureCasesFound(randomTestCases));
+                    System.out.println("Search Based Results");
+                    System.out.println(system.failureCasesFound(sbsTestCases));
+                    System.out.println("Select Test from Candidate Set Results");
+                    System.out.println(system.failureCasesFound(stfcsTestCases));
+        
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }catch (Exception e){
+                System.out.println("Incorrect arguments. Arguments should be in the form: <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int> ");
+                e.getMessage();
+            }
 
-        try {
-            List<TestCase> randomTestCases = randomTesting.createTestSet();
-            List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
-            List<TestCase> sbsTestCases = sbsTesting.performSBS();
-
-            SimulatedSystem system = new SimulatedSystem(5, "box", inputDomain, 2);
-
-            System.out.println(sbsTestCases);
-            System.out.println(system.failureCasesFound(sbsTestCases));
-            System.out.println(stfcsTestCases);
-            System.out.println(system.failureCasesFound(stfcsTestCases));
-            System.out.println(randomTestCases);
-            System.out.println(system.failureCasesFound(randomTestCases));
-
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+       
         }
+        
     }
 
-
-    public static List<TestCase> parseInputFile(String fileName) throws FileNotFoundException, IOException{
+    private static List<TestCase> parseInputFile(String fileName) throws FileNotFoundException, IOException{
         List<TestCase> inputDomain = new ArrayList<>();
 
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {

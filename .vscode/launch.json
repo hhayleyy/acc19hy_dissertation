@@ -1,0 +1,88 @@
+{
+    // Current configurations made for each input domain
+    // Arguments: 
+    // 1. File name
+    // 2. Test Set Size
+    // 3. Population size for Search Based Strategy
+    // 4. Amount of generations for Search Based Strategy
+    // 5. Amount of parents for Search Based Strategy
+    // 6. Mutation Probability for Search Based Strategy
+    // 7. Failure Region Type ("point", "box")
+    // 8. Amount of failure regions
+    
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "1d-100",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["1d-100.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "2d-100",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["2d-100.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "3d-100",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["3d-100.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "1d-1000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["1d-1000.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "2d-1000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["2d-1000.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "3d-1000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["3d-1000.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "1d-10000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["1d-10000.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "2d-10000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["2d-10000.csv","20","10","100","2","0.2","box","2"]
+        },
+        {
+            "type": "java",
+            "name": "3d-10000",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "acc19hy_dissertation_14d765a",
+            "args": ["3d-10000.csv","20","10","100","2","0.2","box","2"]
+        }
+    ]
+}

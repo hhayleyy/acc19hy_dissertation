@@ -38,20 +38,16 @@ public class SearchBased extends RandomTesting {
                 int counter = 0;
                 double currentProbability = 0;
                 while(foundDiversity == false){
-                    double randomProbability = random.nextDouble();
                     double relativeDiversity = 0;
+                    double randomProbability = random.nextDouble();
                     List<TestCase> testSet = population.get(counter);
                     relativeDiversity = calculateDiversity(testSet)/totalDiversity;
                     currentProbability += relativeDiversity;
-                    if (randomProbability <= currentProbability && !parents.contains(testSet)){
+                    if (randomProbability <= currentProbability){
                         parents.add(testSet);
                         foundDiversity = true;
                     }else{
-                        if (counter == numTestCases-1){
-                            foundDiversity = true;
-                        } else{
-                            counter += 1;
-                        }
+                        counter += 1;
                     }
                 }
             }
