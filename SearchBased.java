@@ -25,34 +25,13 @@ public class SearchBased extends RandomTesting {
         List<List<TestCase>> population = generateRandomPopulation();
         int generation = 1;
         while (generation <= numGenerations){
-            double totalDiversity = 0;
             List<List<TestCase>> parents = new ArrayList<>();
-            for (List<TestCase> testSet: population){
-                double diversity = calculateDiversity(testSet);
-                totalDiversity += diversity;
-            }
-
-            for (int parent = 1 ; parent <= numParents; parent ++ ){
-                Random random = new Random();
-                boolean foundDiversity = false;
-                int counter = 0;
-                double currentProbability = 0;
-                while(foundDiversity == false){
-                    double relativeDiversity = 0;
-                    double randomProbability = random.nextDouble();
-                    List<TestCase> testSet = population.get(counter);
-                    relativeDiversity = calculateDiversity(testSet)/totalDiversity;
-                    currentProbability += relativeDiversity;
-                    if (randomProbability <= currentProbability){
-                        parents.add(testSet);
-                        foundDiversity = true;
-                    }else{
-                        counter += 1;
-                    }
+            while(parents.size() < numParents){
+                List<TestCase> potentialParent = selectParent(population);
+                if (!parents.contains(potentialParent)){
+                    parents.add(potentialParent);
                 }
             }
-            
-
 
             population = performMutation(reproduction(performOnePointCrossover(parents)));
             generation += 1;
@@ -66,12 +45,34 @@ public class SearchBased extends RandomTesting {
                 bestTestSet = testSet;
             }
         }
-
         return bestTestSet;
 
     }
 
-    public List<List<TestCase>> generateRandomPopulation() throws Exception{
+    private List<TestCase> selectParent(List<List<TestCase>> population){
+        double totalDiversity = 0;
+        Random random = new Random();
+        for (List<TestCase> testSet: population){
+            double diversity = calculateDiversity(testSet);
+            totalDiversity += diversity;
+        }
+
+        double randomProbability = random.nextDouble()*totalDiversity;
+
+        double currentDiversity = 0.0;
+        
+        for (List<TestCase> testSet  : population) {
+            currentDiversity += calculateDiversity(testSet);
+            if (currentDiversity >= randomProbability) {
+                return testSet;
+            }
+        }
+
+        return population.get(population.size() - 1);
+
+    }
+
+    private List<List<TestCase>> generateRandomPopulation() throws Exception{
         List<List<TestCase>> randomTestSets = new ArrayList<>();
 
         for (int testSetCount = 0; testSetCount < this.populationSize; testSetCount++){
@@ -83,7 +84,7 @@ public class SearchBased extends RandomTesting {
         
     }
 
-    public double calculateDiversity(List<TestCase> testSet){
+    private double calculateDiversity(List<TestCase> testSet){
         // sum of the distance between the test datum and its nearest neighbour
         double diversity = 0;
 
@@ -104,11 +105,13 @@ public class SearchBased extends RandomTesting {
         return diversity;
     }
 
-    public List<List<TestCase>> performOnePointCrossover(List<List<TestCase>> parents){
-
-        for ( int parentCount = 1; parentCount <= numParents ; parentCount +=2 ){
-            List<TestCase> firstParent = parents.get(parentCount-1);
-            List<TestCase> secondParent = parents.get(parentCount);
+    private List<List<TestCase>> performOnePointCrossover(List<List<TestCase>> parents){
+        if(parents.size() < 2){
+            return parents;
+        }
+        for ( int parentCount = 0; parentCount < numParents ; parentCount +=2 ){
+            List<TestCase> firstParent = parents.get(parentCount);
+            List<TestCase> secondParent = parents.get(parentCount+1);
             int midpoint = firstParent.size()/2;
 
             List<TestCase> firstHalfFirstParent = firstParent.subList(0, midpoint);
@@ -127,11 +130,10 @@ public class SearchBased extends RandomTesting {
             parents.add(combinedOffspringTwo);
         }
 
-        
         return parents;
     }
 
-    public List<List<TestCase>> performMutation(List<List<TestCase>> population){
+    private List<List<TestCase>> performMutation(List<List<TestCase>> population){
 
         for (List<TestCase> testSet: population){
             Random random = new Random();
@@ -152,7 +154,7 @@ public class SearchBased extends RandomTesting {
 
         return population;
     }
-    public List<List<TestCase>> reproduction(List<List<TestCase>> parents){
+    private List<List<TestCase>> reproduction(List<List<TestCase>> parents){
         List<List<TestCase>> population = new ArrayList<>(parents);
 
         while(population.size() < populationSize ){

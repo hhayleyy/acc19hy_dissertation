@@ -20,12 +20,16 @@ public class SelectTestFromCandidate extends RandomTesting{
 
         while (executedSet.size() < numTestCases){
             List<TestCase> candidateSet = super.createTestSet();
+            while (candidateSet.contains(testCase)){
+                candidateSet = super.createTestSet();
+            }
+
             double highestDistance = 0;
             TestCase nextTestCase = new TestCase();
 
             for (TestCase candidate: candidateSet){
                 double euclideanDistance = DistanceMetric.euclideanDistance(testCase, candidate);
-                if (euclideanDistance > highestDistance){
+                if (euclideanDistance > highestDistance && !executedSet.contains(candidate)){
                     nextTestCase = candidate;
                 }
             }

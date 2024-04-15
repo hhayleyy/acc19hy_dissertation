@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Main { 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        if(args.length != 8){
+        if(args.length != 9){
             System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int>");
         }else{
             try{
@@ -19,6 +19,7 @@ public class Main {
                 double sbsMutationProbability = Double.parseDouble(args[5]);
                 String failureRegionType = args[6];
                 int totalFailureRegions = Integer.parseInt(args[7]); 
+                int boxSize = Integer.parseInt(args[8]);
 
                 List<TestCase> inputDomain = parseInputFile("input_domains/"+fileName);
 
@@ -32,14 +33,14 @@ public class Main {
                     List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
                     List<TestCase> sbsTestCases = sbsTesting.performSBS();
         
-                    SimulatedSystem system = new SimulatedSystem(totalFailureRegions, failureRegionType, inputDomain);
+                    SimulatedSystem system = new SimulatedSystem(totalFailureRegions, boxSize, failureRegionType, inputDomain);
         
-                    System.out.println("Random Test Results");
-                    System.out.println(system.failureCasesFound(randomTestCases));
-                    System.out.println("Search Based Results");
-                    System.out.println(system.failureCasesFound(sbsTestCases));
-                    System.out.println("Select Test from Candidate Set Results");
-                    System.out.println(system.failureCasesFound(stfcsTestCases));
+                    System.out.println("--------------- Random Test Results ---------------");
+                    System.out.println("Amount of failures found: "+ system.failureCasesFound(randomTestCases));
+                    System.out.println("--------------- Search Based Results ---------------");
+                    System.out.println("Amount of failures found: "+ system.failureCasesFound(sbsTestCases));
+                    System.out.println("--------------- Select Test from Candidate Set Results ---------------");
+                    System.out.println("Amount of failures found: "+ system.failureCasesFound(stfcsTestCases));
         
                     
                 } catch (Exception e) {
