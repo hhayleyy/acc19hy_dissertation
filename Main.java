@@ -1,14 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main { 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        if(args.length != 9){
-            System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int>");
+        long startTime = System.currentTimeMillis();
+        if(args.length != 10){
+            System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int> <boxSize: Int> <outputFile: String>");
         }else{
             try{
                 String fileName = args[0];
@@ -22,25 +27,41 @@ public class Main {
                 int boxSize = Integer.parseInt(args[8]);
 
                 List<TestCase> inputDomain = parseInputFile("input_domains/"+fileName);
+                String outputFile = "results/"+args[9];
 
 
                 RandomTesting randomTesting = new RandomTesting(inputDomain, testSetSize);
-                SelectTestFromCandidate stfcsTesting = new SelectTestFromCandidate(inputDomain, testSetSize);
                 SearchBased sbsTesting = new SearchBased(inputDomain, testSetSize, sbsPopulationSize, sbsGenerationAmount,sbsParentsAmount,sbsMutationProbability);
+                SelectTestFromCandidate stfcsTesting = new SelectTestFromCandidate(inputDomain, testSetSize);
         
                 try {
                     List<TestCase> randomTestCases = randomTesting.createTestSet();
-                    List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
                     List<TestCase> sbsTestCases = sbsTesting.performSBS();
+                    List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
         
                     SimulatedSystem system = new SimulatedSystem(totalFailureRegions, boxSize, failureRegionType, inputDomain);
-        
+                    String[] randomCasesResults = system.failureCasesFound(randomTestCases);
+                    String[] searchCasesResults = system.failureCasesFound(sbsTestCases);
+                    String[] stfcsCasesResults = system.failureCasesFound(stfcsTestCases);
+
+                    List<String[]> results = new ArrayList<>(){{
+                        add(randomCasesResults);
+                        add(searchCasesResults);
+                        add(stfcsCasesResults);
+                    }};
+
                     System.out.println("--------------- Random Test Results ---------------");
-                    System.out.println("Amount of failures found: "+ system.failureCasesFound(randomTestCases));
+                    System.out.println("First failure found at test case: "+randomCasesResults[0]);
+                    System.out.println("Amount of failures found: "+ randomCasesResults[1]);
                     System.out.println("--------------- Search Based Results ---------------");
-                    System.out.println("Amount of failures found: "+ system.failureCasesFound(sbsTestCases));
+                    System.out.println("First failure found at test case: "+searchCasesResults[0]);
+                    System.out.println("Amount of failures found: "+ searchCasesResults[1]);
                     System.out.println("--------------- Select Test from Candidate Set Results ---------------");
-                    System.out.println("Amount of failures found: "+ system.failureCasesFound(stfcsTestCases));
+                    System.out.println("First failure found at test case: "+stfcsCasesResults[0]);
+                    System.out.println("Amount of failures found: "+ stfcsCasesResults[1]);
+
+                    outputToCSV(results, outputFile, startTime);
+
         
                     
                 } catch (Exception e) {
@@ -76,6 +97,8 @@ public class Main {
                 }
                 line = reader.readLine();
             }
+
+            reader.close();
         
         }catch (Exception e) {
             System.out.println("There has been an error");
@@ -83,5 +106,53 @@ public class Main {
         }
         return inputDomain;
 
+    }
+
+    private static void outputToCSV(List<String[]> results, String outputFileName, long startTime){
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH mm ss");
+        String[] headings = {"","First Failure Found","Amount of Failures Found"};
+        char comma = ',';
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true))){
+            writer.newLine();
+            writer.write(now.format(formatter));
+            writer.newLine();
+            for (String header: headings){
+                writer.write(header);
+                writer.write(comma);
+            }
+            writer.newLine();
+            for (String[] resultSet: results){
+                if(results.indexOf(resultSet) == 0){
+                    writer.write("Random Test Results");
+                }else if(results.indexOf(resultSet) == 1){
+                    writer.write("Search Based Results");
+                }else{
+                    writer.write("STFCS Results");
+                }
+                writer.write(comma);
+                for(String result : resultSet){
+                    if(result == null){
+                        writer.write("null");
+                    }else {
+                    writer.write(result);
+                    }
+                    writer.write(comma);
+                }
+                writer.newLine();
+            }
+
+            long endTime = System.currentTimeMillis();
+            writer.write("Runtime: "+(endTime-startTime));
+            System.out.println("--------------- Runtime in milliseconds ---------------");
+            System.out.println(endTime-startTime);
+            writer.close();
+            
+        } catch(IOException e){
+            System.out.println("There has been an error");
+            System.out.println(e.getMessage());
+        }
     }
 }

@@ -9,6 +9,7 @@ public class SimulatedSystem {
     private List<TestCase> failureRegions;
     private String failureRegionType;
     private int boxSize;
+    private List<Double> maxInputDomainValues;
 
 
     public SimulatedSystem(int totalFailureRegions, int boxSize, String failureRegionType, List<TestCase> inputDomain){
@@ -17,6 +18,7 @@ public class SimulatedSystem {
         this.lengthOfInput = inputDomain.size();
         this.failureRegionType = failureRegionType;
         this.boxSize = boxSize;
+        this.maxInputDomainValues = findMaximumInputDomainValuesForEachDimension();
         this.failureRegions = createFailureRegions();
     }
 
@@ -72,7 +74,7 @@ public class SimulatedSystem {
             for (int dimensionCount = 0 ; dimensionCount < amountOfDimensions; dimensionCount++){
                 List<Double> boxDimension = new ArrayList<>();
                 double startOfBox = randomFailure.getInputCaseValue(dimensionCount);
-                double endOfBox = startOfBox + boxSize;
+                double endOfBox = startOfBox + (boxSize - 1);
 
                 boxDimension.add(startOfBox);
                 boxDimension.add(endOfBox);
@@ -111,13 +113,12 @@ public class SimulatedSystem {
     
     private boolean isInRange(TestCase testCase, double boxSize){
         boolean isInRange = true;
-        List<Double> maximumValues = findMaximumInputDomainValuesForEachDimension();
 
         for (int dimensionCount = 0 ; dimensionCount < testCase.getNumberOfDimensions(); dimensionCount ++){
-            double maxValue = maximumValues.get(dimensionCount);
+            double maxValue = maxInputDomainValues.get(dimensionCount);
             double dimensionalValue = testCase.getInputCaseValue(dimensionCount);
 
-            if( (dimensionalValue + boxSize > maxValue)){
+            if( (dimensionalValue + boxSize > maxValue+1)){
                 isInRange = false;
             }
         }
@@ -163,14 +164,16 @@ public class SimulatedSystem {
         return maxInputs;
     }
 
-    public int failureCasesFound(List<TestCase> testCases){
+    public String[] failureCasesFound(List<TestCase> testCases){
         List<TestCase> failurePointsFound = new ArrayList<>();
+        String[] results = new String[2];
 
         if (failureRegionType.equals("point")){
             for (TestCase testCase : testCases){
                 if (failureRegions.contains(testCase)){
                     if (failurePointsFound.isEmpty()){
-                        System.out.println("First failure found at test case: "+testCases.indexOf(testCase));
+                        int index = testCases.indexOf(testCase) + 1;
+                        results[0] = String.valueOf(index);
                     }
                     failurePointsFound.add(testCase);
                 }
@@ -192,13 +195,15 @@ public class SimulatedSystem {
 
                     if (inFailureRegion){
                         if (failurePointsFound.isEmpty()){
-                            System.out.println("First failure found at test case: "+testCases.indexOf(testCase));
+                            int index = testCases.indexOf(testCase) + 1;
+                            results[0] = String.valueOf(index);
                         }
                         failurePointsFound.add(testCase);
                     }
                 }
             }
         }
-        return failurePointsFound.size();
+        results[1] = String.valueOf(failurePointsFound.size());
+        return results;
     }
 }
