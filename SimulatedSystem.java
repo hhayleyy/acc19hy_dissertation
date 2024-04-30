@@ -203,7 +203,6 @@ public class SimulatedSystem {
                 }
             }
         }
-        System.out.println(failureRegions);
         results[1] = String.valueOf(failurePointsFound.size());
         return results;
     }
