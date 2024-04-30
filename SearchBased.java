@@ -23,8 +23,8 @@ public class SearchBased extends RandomTesting {
 
     public List<TestCase> performSBS() throws Exception{
         List<List<TestCase>> population = generateRandomPopulation();
-        int generation = 1;
-        while (generation <= numGenerations){
+        int generation = 0;
+        while (generation < numGenerations){
             List<List<TestCase>> parents = new ArrayList<>();
             while(parents.size() < numParents){
                 List<TestCase> potentialParent = selectParent(population);
