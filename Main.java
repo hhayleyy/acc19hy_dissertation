@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         long startTime = System.currentTimeMillis();
         if(args.length != 10){
-            System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int> <boxSize: Int> <outputFile: String>");
+            System.out.println("Usage: java CommandLineArguments <inputDomain: String> <testSetSize: Int> <sbsPopulationSize: Int> <sbsGenerationAmount: Int> <sbsParentsAmount: Int> <sbsMutationProbability: Double> <failureRegionType: String> <totalFailureRegions: Int> <blockSize: Int> <outputFile: String>");
         }else{
             try{
                 String fileName = args[0];
@@ -24,7 +24,7 @@ public class Main {
                 double sbsMutationProbability = Double.parseDouble(args[5]);
                 String failureRegionType = args[6];
                 int totalFailureRegions = Integer.parseInt(args[7]); 
-                int boxSize = Integer.parseInt(args[8]);
+                int blockSize = Integer.parseInt(args[8]);
 
                 List<TestCase> inputDomain = parseInputFile("input_domains/"+fileName);
                 String outputFile = "results/"+args[9];
@@ -39,7 +39,7 @@ public class Main {
                     List<TestCase> sbsTestCases = sbsTesting.performSBS();
                     List<TestCase> stfcsTestCases = stfcsTesting.performSTFCS();
         
-                    SimulatedSystem system = new SimulatedSystem(totalFailureRegions, boxSize, failureRegionType, inputDomain);
+                    SimulatedSystem system = new SimulatedSystem(totalFailureRegions, blockSize, failureRegionType, inputDomain);
                     String[] randomCasesResults = system.failureCasesFound(randomTestCases);
                     String[] searchCasesResults = system.failureCasesFound(sbsTestCases);
                     String[] stfcsCasesResults = system.failureCasesFound(stfcsTestCases);

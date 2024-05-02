@@ -7,9 +7,9 @@
     // 4. Amount of generations for Search Based Strategy
     // 5. Amount of parents for Search Based Strategy
     // 6. Mutation Probability for Search Based Strategy
-    // 7. Failure Region Type ("point", "box", "strip")
+    // 7. Failure Region Type ("point", "block", "strip")
     // 8. Amount of failure regions
-    // 9. Box Size (for box/strip failure regions only)
+    // 9. Block Size (for block/strip failure regions only)
     // 10. Output file (Will automatically output to the results folder)
     
     "version": "0.05.0",
